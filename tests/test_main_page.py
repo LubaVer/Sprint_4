@@ -1,6 +1,8 @@
 import allure
-
+import pytest
 from pages.main_page import MainPage
+from pages.order_page import OrderPage
+from selenium.webdriver.common.keys import Keys
 
 
 class TestQuestions():
@@ -65,7 +67,8 @@ class TestQuestions():
 
 class TestOpenOrderPage():
 
-    @allure.title('Переход на страницу заказа через кнопку вверху страницы')
+
+    @allure.title('Переход на страницу заказа через кнопку внизу страницы')
     def test_open_order_page_with_middle_button(self, main_page):
         main_page.scroll_to_element(MainPage.order_button_middle)
         main_page.click_element(MainPage.order_button_middle)
@@ -75,3 +78,44 @@ class TestOpenOrderPage():
     def test_open_order_page_with_heder_button(self, main_page):
         main_page.click_element(MainPage.order_button)
         assert main_page.current_url() == 'https://qa-scooter.praktikum-services.ru/order'
+
+    @allure.title('Успешное оформление заказа через кнопку вверху страницы')
+    @pytest.mark.parametrize('user', OrderPage.USERS)
+    def test_order_with_heder_button(self, main_page, user):
+        main_page.click_element(MainPage.order_button)
+        main_page.find_element(OrderPage.input_name).send_keys(user.get('Имя'))
+        main_page.find_element(OrderPage.input_surname).send_keys(user.get('Фамилия'))
+        main_page.find_element(OrderPage.input_address).send_keys(user.get('Адрес'))
+        main_page.find_element(OrderPage.input_metro).send_keys(user.get('Метро'))
+        main_page.click_element(OrderPage.select_metro)
+        main_page.find_element(OrderPage.input_phone).send_keys(user.get('Телефон'))
+        main_page.click_element(OrderPage.next_button)
+        d = main_page.find_element(OrderPage.input_date)
+        d.send_keys(user.get('Дата'))
+        d.send_keys(Keys.ESCAPE)
+        main_page.click_element(OrderPage.due_date)
+        main_page.click_element(OrderPage.due_date_variants)
+        main_page.click_element(OrderPage.order_button_form)
+        main_page.click_element(OrderPage.yes_button)
+        assert "Заказ оформлен" in main_page.element_text(OrderPage.order_done)
+
+    @allure.title('Успешное оформление заказа через кнопку внизу страницы')
+    @pytest.mark.parametrize('user', OrderPage.USERS)
+    def test_order(self, main_page, user):
+        main_page.scroll_to_element(MainPage.order_button_middle)
+        main_page.click_element(MainPage.order_button_middle)
+        main_page.find_element(OrderPage.input_name).send_keys(user.get('Имя'))
+        main_page.find_element(OrderPage.input_surname).send_keys(user.get('Фамилия'))
+        main_page.find_element(OrderPage.input_address).send_keys(user.get('Адрес'))
+        main_page.find_element(OrderPage.input_metro).send_keys(user.get('Метро'))
+        main_page.click_element(OrderPage.select_metro)
+        main_page.find_element(OrderPage.input_phone).send_keys(user.get('Телефон'))
+        main_page.click_element(OrderPage.next_button)
+        d = main_page.find_element(OrderPage.input_date)
+        d.send_keys(user.get('Дата'))
+        d.send_keys(Keys.ESCAPE)
+        main_page.click_element(OrderPage.due_date)
+        main_page.click_element(OrderPage.due_date_variants)
+        main_page.click_element(OrderPage.order_button_form)
+        main_page.click_element(OrderPage.yes_button)
+        assert "Заказ оформлен" in main_page.element_text(OrderPage.order_done)

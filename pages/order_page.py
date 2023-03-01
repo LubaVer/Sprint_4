@@ -38,7 +38,8 @@ class OrderPage(BasePage):
     order_button_form = [By.XPATH, "//button[@class='Button_Button__ra12g Button_Middle__1CSJM']"]
     yes_button = [By.XPATH, "//button[contains(text(),'Да')]"]
     order_done = [By.CLASS_NAME, "Order_ModalHeader__3FDaJ"]
-
-
+    back_button = [By.XPATH, "//button[contains(text(),'Назад')]"]
+    header_for_who = [By.XPATH, "//div[contains(text(),'Для кого самокат')]"]
+    header_about_borrow = [By.XPATH, "//div[contains(text(),'Про аренду')]"]
     def go_to_order_page(self):
         self.go_to_page('order')
